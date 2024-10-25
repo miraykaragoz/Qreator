@@ -1,0 +1,82 @@
+@model Qr
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Kodu Oluşturuldu! - Qreator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<section class="qr-result bg-light text-center">
+    <div class="container">
+        <h2>QR Kodu Oluşturuldu!</h2>
+        <p class="lead mb-4">Aşağıdaki QR kodunu tarayarak bağlantınıza erişebilirsiniz.</p>
+        <div class="qr-code">
+            @if (Model.ImagePath != null)
+            {
+                <img src="@ViewBag.Qr" alt="QR Code" id="qrCodeImage"/>
+            }
+            else
+            {
+                <p>QR kod oluşturulken bir hata oluştu.</p>
+            }
+        </div>
+        <div class="mt-4">
+            <h3>Kodunuzu Paylaşın</h3>
+            <p>Bu QR kodunu sosyal medya veya diğer platformlarda paylaşarak, başkalarının da erişim sağlamasına yardımcı olabilirsiniz.</p>
+            <button class="btn" style="background-color: rgba(90, 79, 207, 1); color: white;" onclick="shareQRCode()">QR Kodu Paylaş</button>
+        </div>
+    </div>
+</section>
+</body>
+</html>
+
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+    .qr-result {
+        padding: 60px 0;
+    }
+    .qr-code img {
+        max-width: 300px;
+        width: 100%;
+        height: auto;
+        border: 2px solid rgba(90, 79, 207, 0.3);
+        border-radius: 8px;
+    }
+    h2 {
+        color: rgba(90, 79, 207, 1);
+    }
+    .list-unstyled li {
+        margin: 10px 0;
+    }
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    function shareQRCode() {
+        const qrCodeImage = document.getElementById('qrCodeImage').src;
+        const shareData = {
+            title: 'QR Kodunuzu Paylaşın!',
+            text: 'Bu QR kodunu tarayarak bağlantıya ulaşabilirsiniz!',
+            url: qrCodeImage
+        };
+
+        if (navigator.share) {
+            navigator.share(shareData).then(() => {
+                console.log('Başarıyla paylaşıldı');
+            }).catch((error) => {
+                console.error('Paylaşma hatası:', error);
+            });
+        }
+    }
+</script>

@@ -1,0 +1,159 @@
+﻿@model Qr
+
+@{
+    ViewData["Title"] = "Anasayfa";
+}
+
+@if (ViewBag.CaptchaError != null)
+{
+    <div class="alert alert-danger" role="alert">
+        reCaptcha doğrulanamadı!
+    </div>
+}
+
+<header class="masthead">
+    <div class="container position-relative">
+        <div class="row justify-content-center">
+            <div class="col-xl-6">
+                <div class="text-center text-white">
+                    <h1 class="mb-5">Kolayca QR kod oluşturun!</h1>
+                    <form asp-action="GenerateQrCode" autocomplete="off" id="kayitFormu">
+                        <div class="row mb-3">
+                            <div class="col">
+                                <select class="form-control form-control-lg" id="DataType" asp-for="DataType" required>
+                                    <option value="" selected disabled>Seçiniz</option>
+                                    <option value="Url">URL</option>
+                                    <option value="Email">E-posta</option>
+                                    <option value="PhoneNumber">Telefon Numarası</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-3" id="urlInput" style="display:none;">
+                            <div class="col">
+                                <input class="form-control form-control-lg" asp-for="Url" type="url" placeholder="https://www.example.com"/>
+                            </div>
+                        </div>
+                        <div class="row mb-3" id="emailInput" style="display:none;">
+                            <div class="col">
+                                <input class="form-control form-control-lg" asp-for="Email" type="email" placeholder="example@example.com"/>
+                            </div>
+                        </div>
+                        <div class="row mb-3" id="phoneInput" style="display:none;">
+                            <div class="col">
+                                <input class="form-control form-control-lg" asp-for="PhoneNumber" type="tel" placeholder="0 (123) 456 78 90"/>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <button class="btn btn-primary btn-lg g-recaptcha"
+                                    data-sitekey=""
+                                    data-callback='onSubmit'
+                                    data-action='submit'>
+                                Kaydet
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<section class="features-icons bg-light text-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
+                    <div class="features-icons-icon d-flex">
+                        <i class="bi-list m-auto icon-color"></i>
+                    </div>
+                    <h3>Adım 1: QR Kod Tipini Seçin</h3>
+                    <p class="lead mb-0">İlk adımda, hangi tür veriyi QR kodunuza eklemek istediğinizi belirleyin. URL, e-posta veya telefon numarası gibi seçenekler arasından tercih yapın!</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
+                    <div class="features-icons-icon d-flex">
+                        <i class="bi-gear m-auto icon-color"></i>
+                    </div>
+                    <h3>Adım 2: QR Kodunuzu Özelleştirin</h3>
+                    <p class="lead mb-0">İkinci adımda, QR kodunuza bir logo eklemek isteyip istemediğinizi seçin. Kişiselleştirme seçeneklerinizle, kodunuzu tam hayal ettiğiniz gibi oluşturun!</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="features-icons-item mx-auto mb-0 mb-lg-3">
+                    <div class="features-icons-icon d-flex">
+                        <i class="bi-download m-auto icon-color"></i>
+                    </div>
+                    <h3>Adım 3: QR Kodunuzu Oluşturun</h3>
+                    <p class="lead mb-0">Son olarak, tüm ayarlarınızı gözden geçirip "Oluştur" butonuna tıklayarak QR kodunuzu oluşturun. Artık kodunuzu indirip paylaşmanın keyfini çıkarabilirsiniz!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.getElementById("DataType").addEventListener("change", function() {
+        var selectedType = this.value;
+
+        var urlInput = document.getElementById("urlInput");
+        var emailInput = document.getElementById("emailInput");
+        var phoneInput = document.getElementById("phoneInput");
+
+        urlInput.style.display = "none";
+        emailInput.style.display = "none";
+        phoneInput.style.display = "none";
+
+        urlInput.querySelector("input").removeAttribute("required");
+        emailInput.querySelector("input").removeAttribute("required");
+        phoneInput.querySelector("input").removeAttribute("required");
+
+        if (selectedType === "Url") {
+            urlInput.style.display = "block";
+            urlInput.querySelector("input").setAttribute("required", "required");
+        } else if (selectedType === "Email") {
+            emailInput.style.display = "block";
+            emailInput.querySelector("input").setAttribute("required", "required");
+        } else if (selectedType === "PhoneNumber") {
+            phoneInput.style.display = "block";
+            phoneInput.querySelector("input").setAttribute("required", "required");
+        }
+    });
+</script>
+
+<script src="https://www.google.com/recaptcha/api.js"></script>
+<script>
+    function onSubmit(token) {
+        if (kayitFormu.reportValidity()){
+            kayitFormu.submit();
+        }
+    }
+</script>
+
+<style>
+    .icon-color {
+        color: rgba(90, 79, 207, 1);
+    }
+
+    .g-recaptcha {
+        background-color: rgba(90, 79, 207, 1);
+        border: none;
+        color: white;
+        font-size: 1.30rem;
+        padding: 0.75rem 0.5rem;
+        border-radius: 0.3rem;
+        cursor: pointer;
+        display: inline-block;
+        text-align: center;
+        transition: background-color 0.3s ease;
+        width: 100px;
+    }
+
+    .g-recaptcha:hover {
+        background-color: rgba(90, 79, 207, 0.8);
+    }
+
+    .g-recaptcha:focus {
+        outline: none;
+    }
+</style>
